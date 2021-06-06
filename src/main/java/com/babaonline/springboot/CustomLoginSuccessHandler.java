@@ -1,4 +1,4 @@
-package com.babaonline.admin.security;
+package com.babaonline.springboot;
 
 import java.io.IOException;
 
@@ -12,8 +12,8 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import com.babaonline.springboot.model.User;
-import com.babaonline.springboot.service.ShopmeUserDetails;
 import com.babaonline.springboot.service.UserService;
+
  
 @Component
 public class CustomLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -24,10 +24,15 @@ public class CustomLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
-        ShopmeUserDetails userDetails =  (ShopmeUserDetails) authentication.getPrincipal();
-        User user = userDetails.getUser();
-        if (user.getFailedAttempt() > 0) {
-            userService.resetFailedAttempts(user.getEmail());
+        
+    	org.springframework.security.core.userdetails.User userDetails =  (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+       
+        String userName = userDetails.getUsername();
+  
+        User user = userService.getByEmail(userName);
+        
+        if (user.isAccountNonLocked() == 1) {
+        	userService.resetFailedAttempts(user.getEmail());
         }
          
         super.onAuthenticationSuccess(request, response, authentication);

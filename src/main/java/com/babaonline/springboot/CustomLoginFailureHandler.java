@@ -1,4 +1,4 @@
-package com.babaonline.admin.security;
+package com.babaonline.springboot;
 
 import java.io.IOException;
 
@@ -24,26 +24,43 @@ public class CustomLoginFailureHandler extends SimpleUrlAuthenticationFailureHan
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException exception) throws IOException, ServletException {
-        String email = request.getParameter("email");
+      
+    	System.out.println("Entrando em onAuthenticationFailure");
+    	
+    	System.out.println(request.getParameterMap());
+    	
+    	String email = request.getParameter("username");
         User user = userService.getByEmail(email);
-         
+        String msg = "";
+        
+        
         if (user != null) {
-            if (user.isEnabled() && user.isAccountNonLocked()) {
+        	System.out.println("Usuario " + user.isEnabled() + "- " + user.isAccountNonLocked());
+        	if (user.isEnabled() && user.isAccountNonLocked() == 1) {
+        		System.out.println("user.getFailedAttempt() " + user.getFailedAttempt());
                 if (user.getFailedAttempt() < UserService.MAX_FAILED_ATTEMPTS - 1) {
                     userService.increaseFailedAttempts(user);
                 } else {
+                	System.out.println("Trancar usuario " + user);
                     userService.lock(user);
                     exception = new LockedException("Your account has been locked due to 3 failed attempts."
                             + " It will be unlocked after 24 hours.");
+                    msg = "Your account has been locked due to 3 failed attempts.\"\r\n"
+                    		+ "                            + \" It will be unlocked after 24 hours.\"";
+                
                 }
-            } else if (!user.isAccountNonLocked()) {
+            } else if (user.isAccountNonLocked()!= 1) {
                 if (userService.unlockWhenTimeExpired(user)) {
+                	System.out.println("Destrancar usuario " + user);
                     exception = new LockedException("Your account has been unlocked. Please try to login again.");
+                     msg = "Your account has been unlocked. Please try to login again.";
+                
                 }
+                 msg = "Your account has been locked due to 3 failed attempts.\"\r\n"
+                		+ "                            + \" It will be unlocked after 24 hours.\"";
             }
              
         }
-         
         super.setDefaultFailureUrl("/login?error");
         super.onAuthenticationFailure(request, response, exception);
     }

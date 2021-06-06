@@ -11,8 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import com.babaonline.admin.security.CustomLoginFailureHandler;
-import com.babaonline.admin.security.CustomLoginSuccessHandler;
+import com.babaonline.springboot.CustomLoginFailureHandler;
+import com.babaonline.springboot.CustomLoginSuccessHandler;
 import com.babaonline.springboot.service.UserService;
 
 @Configuration

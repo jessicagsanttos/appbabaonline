@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.babaonline.springboot.model.Role;
 import com.babaonline.springboot.model.User;
@@ -56,17 +57,21 @@ public class UserServiceImpl implements UserService {
 		return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
 	}
 	
+	@Transactional
 	public void increaseFailedAttempts(User user) {
         int newFailAttempts = user.getFailedAttempt() + 1;
         userRepository.updateFailedAttempts(newFailAttempts, user.getEmail());
     }
      
+	 @Transactional
     public void resetFailedAttempts(String email) {
+    	System.out.println("Entrando resetFailedAttempts: " + email) ;
     	userRepository.updateFailedAttempts(0, email);
     }
      
+	 @Transactional
     public void lock(User user) {
-        user.setAccountNonLocked(false);
+        user.setAccountNonLocked(0);
         user.setLockTime(new Date());
          
         userRepository.save(user);
@@ -77,7 +82,7 @@ public class UserServiceImpl implements UserService {
         long currentTimeInMillis = System.currentTimeMillis();
          
         if (lockTimeInMillis + LOCK_TIME_DURATION < currentTimeInMillis) {
-            user.setAccountNonLocked(true);
+            user.setAccountNonLocked(0);
             user.setLockTime(null);
             user.setFailedAttempt(0);
              

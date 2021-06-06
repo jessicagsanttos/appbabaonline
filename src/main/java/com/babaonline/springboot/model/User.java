@@ -47,7 +47,7 @@ public class User {
 	private boolean enabled;
     
     @Column(name = "account_non_locked")
-    private boolean accountNonLocked;
+    private int accountNonLocked;
      
     @Column(name = "failed_attempt")
     private int failedAttempt;
@@ -67,11 +67,11 @@ public class User {
 		this.enabled = enabled;
 	}
 
-	public boolean isAccountNonLocked() {
+	public int isAccountNonLocked() {
 		return accountNonLocked;
 	}
 
-	public void setAccountNonLocked(boolean accountNonLocked) {
+	public void setAccountNonLocked(int accountNonLocked) {
 		this.accountNonLocked = accountNonLocked;
 	}
 
