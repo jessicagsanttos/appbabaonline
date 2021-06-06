@@ -40,8 +40,9 @@
 					<!-- error message -->
 					<div th:if="${param.error}">
 						<div class="alert alert-danger">Usuario ou senha invalido</div>
+						 <p class="alert alert-danger">[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]</p>
 					</div>
-				
+					
 					<!-- logout message -->
 					<div th:if="${param.logout}">
 						<div class="alert alert-info">Logout realizado com sucesso</div>
