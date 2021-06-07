@@ -49,6 +49,11 @@ public class UserServiceImpl implements UserService {
 		if (user == null) {
 			throw new UsernameNotFoundException("Invalid username or password.");
 		}
+		
+		if(user.getFailedAttempt() > 2) {
+			throw new UsernameNotFoundException("Usuario Bloqueado.");
+		}
+
 		return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
 				mapRolesToAuthorities(user.getRoles()));
 	}

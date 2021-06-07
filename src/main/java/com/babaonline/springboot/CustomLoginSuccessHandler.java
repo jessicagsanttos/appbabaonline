@@ -31,7 +31,7 @@ public class CustomLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
   
         User user = userService.getByEmail(userName);
         
-        if (user.isAccountNonLocked() == 1) {
+        if (user.getFailedAttempt() > 0) {
         	userService.resetFailedAttempts(user.getEmail());
         }
          
