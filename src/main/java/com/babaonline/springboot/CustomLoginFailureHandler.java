@@ -38,7 +38,7 @@ public class CustomLoginFailureHandler extends SimpleUrlAuthenticationFailureHan
 
 		if (user != null) {
 			logger.debug("Usuario carregado a partir do seu username");
-			validarConta(user, userService, exception, msg);
+			validarConta(user, exception, msg);
 		} else {
 			logger.info("Usuario não encontrado a partir do seu username");
 		}
@@ -47,46 +47,55 @@ public class CustomLoginFailureHandler extends SimpleUrlAuthenticationFailureHan
 		super.onAuthenticationFailure(request, response, exception);
 	}
 
-	private void validarConta(User user, UserService userService2, AuthenticationException exception, String msg) {
+	private void validarConta(User user, AuthenticationException exception, String msg) {
 		logger.debug("Iniciando validação da conta do usuário" + user.getEmail());
 
-		boolean usuarioValido = user.isAccountNonLocked() == 1;
+		boolean contaBloqueada = user.isAccountNonLocked() == 1;
 
-		if (usuarioValido) {
+		if (contaBloqueada) {
 			logger.debug("Usuário habilitado e conta ativa");
 			
 			boolean loginsInvalidosMenorQueLimite = user.getFailedAttempt() < UserService.MAX_FAILED_ATTEMPTS - 1;
 			
-			if (loginsInvalidosMenorQueLimite) {
-				logger.debug("Incrementando histórico de logins invalidos em sequência");
-				userService.increaseFailedAttempts(user);
-			} else {
-				
-				userService.increaseFailedAttempts(user);
-				userService.lock(user);
-				exception = new LockedException("Your account has been locked due to 3 failed attempts."
-						+ " It will be unlocked after 24 hours.");
-				msg = "Your account has been locked due to 3 failed attempts.\"\r\n"
-						+ "                            + \" It will be unlocked after 24 hours.\"";
-
-			}
+			tratarFalhaLogin(loginsInvalidosMenorQueLimite, exception, user, msg);
+			
 		} else{
-			if (userService.unlockWhenTimeExpired(user)) {
-				logger.debug("Usuário ha mais de 24 horas trancado, conta liberada");
-				exception = new LockedException("Your account has been unlocked. Please try to login again.");
-				msg = "Your account has been unlocked. Please try to login again.";
+			avaliarLiberacaoConta(user, msg, exception);
+		}
 
-			}else {
-				logger.debug("Usuário há menos de 24 horas trancado, tente novamente");
-				msg = "Your account has been locked due to 3 failed attempts.\"\r\n"
-						+ "                            + \" It will be unlocked after 24 hours.\"";
-				
-				
-			}
+	}
+
+	private void avaliarLiberacaoConta(User user, String msg, AuthenticationException exception) {
+		if (userService.unlockWhenTimeExpired(user)) {
+			logger.debug("Usuário ha mais de 24 horas trancado, conta liberada");
+			exception = new LockedException("Your account has been unlocked. Please try to login again.");
+			msg = "Your account has been unlocked. Please try to login again.";
+
+		}else {
+			logger.debug("Conta trancada por excesso de falhas de logins. Tente novamente após 24 horas");
+			msg = "Your account has been locked due to 3 failed attempts.\"\r\n"
+					+ "                            + \" It will be unlocked after 24 hours.\"";
 			
 			
 		}
+		
+	}
 
+	private void tratarFalhaLogin(boolean loginsInvalidosMenorQueLimite, AuthenticationException exception, User user, String msg) {
+		if (loginsInvalidosMenorQueLimite) {
+			logger.debug("Incrementando histórico de logins invalidos em sequência");
+			userService.increaseFailedAttempts(user);
+		} else {
+			
+			userService.increaseFailedAttempts(user);
+			userService.lock(user);
+			exception = new LockedException("Your account has been locked due to 3 failed attempts."
+					+ " It will be unlocked after 24 hours.");
+			
+			msg = "Your account has been locked due to 3 failed attempts.\"\r\n"
+					+ "                            + \" It will be unlocked after 24 hours.\"";
+		}
+		
 	}
 
 }
