@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
 			throw new UsernameNotFoundException("Invalid username or password.");
 		}
 
-		if (user.isAccountNonLocked() == 0) {
+		if (user.isAccountNonLocked() == 1) {
 			logger.info("Conta bloqueada: " + username);
 			throw new UsernameNotFoundException("Usuario Bloqueado.");
 		}
@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
 
 	@Transactional
 	public void lock(User user) {
-		user.setAccountNonLocked(0);
+		user.setAccountNonLocked(1);
 		user.setLockTime(new Date());
 
 		userRepository.save(user);

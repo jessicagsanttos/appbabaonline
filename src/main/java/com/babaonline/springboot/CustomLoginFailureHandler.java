@@ -50,7 +50,7 @@ public class CustomLoginFailureHandler extends SimpleUrlAuthenticationFailureHan
 	private String validarConta(User user, UserService userService2, AuthenticationException exception) {
 		logger.info("Iniciando validação da conta do usuário" + user.getEmail());
 
-		boolean usuarioValido = user.isAccountNonLocked() == 1;
+		boolean usuarioValido = user.isAccountNonLocked() == 0;
 
 		if (usuarioValido) {
 			logger.info("Usuário habilitado e conta ativa");

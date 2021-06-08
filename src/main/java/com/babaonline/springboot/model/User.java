@@ -43,7 +43,8 @@ public class User {
 				            name = "role_id", referencedColumnName = "id"))
 	
 	private Collection<Role> roles;
-
+  
+	@Column(name = "enabled")
 	private boolean enabled;
     
     @Column(name = "account_non_locked")
