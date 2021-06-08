@@ -34,13 +34,16 @@
 		<div class = "row">
 			<div class = "col-md-6 col-md-offset-3">
 				
-				<h1> Login </h1>
+				<h1> Login </p> </h1>
 				<form th:action="@{/login}" method="post">
 					
 					<!-- error message -->
 					<div th:if="${param.error}">
 						<div class="alert alert-danger">Usuario ou senha invalido</div>
-						 <p class="alert alert-danger">[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]</p>
+					</div>
+					
+					<div th:if="${param.error2}">
+						<div class="alert alert-danger">Usuario ou senha invalido - Conta bloqueada por excesso de tentativas falhas</div>
 					</div>
 					
 					<!-- logout message -->

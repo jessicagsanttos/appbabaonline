@@ -1,0 +1,12 @@
+com\babaonline\springboot\model\Role.class
+com\babaonline\springboot\model\User.class
+com\babaonline\springboot\config\SecurityConfiguration.class
+com\babaonline\springboot\service\UserServiceImpl.class
+com\babaonline\springboot\CustomLoginFailureHandler.class
+com\babaonline\springboot\web\dto\UserRegistrationDto.class
+com\babaonline\springboot\web\MainController.class
+com\babaonline\springboot\repository\UserRepository.class
+com\babaonline\springboot\service\UserService.class
+com\babaonline\springboot\BabaOnlineApplication.class
+com\babaonline\springboot\CustomLoginSuccessHandler.class
+com\babaonline\springboot\web\UserRegistrationController.class
