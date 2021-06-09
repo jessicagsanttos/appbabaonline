@@ -114,5 +114,33 @@ public class UserServiceImpl implements UserService {
 		User user = userRepository.findByEmail(email);
 		return user;
 	}
+	
+	@Transactional
+	public void updateResetPasswordToken(String token, String email) {
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            user.setResetPasswordToken(token);
+            userRepository.save(user);
+        } else {
+             new Exception("Could not find any user with the email " + email);
+        }
+    }
+     
+
+	@Transactional
+    public User getByResetPasswordToken(String token) {
+        return userRepository.findByResetPasswordToken(token);
+    }
+     
+
+	@Transactional
+    public void updatePassword(User user, String newPassword) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(encodedPassword);
+         
+        user.setResetPasswordToken(null);
+        userRepository.save(user);
+    }
 
 }
