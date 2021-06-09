@@ -106,13 +106,13 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Transactional
-	public void updateResetPasswordToken(String token, String email) throws Exception {
+	public void updateResetPasswordToken(String token, String email) {
         User user = userRepository.findByEmail(email);
         if (user != null) {
             user.setResetPasswordToken(token);
             userRepository.save(user);
         } else {
-            throw new Exception("Could not find any user with the email " + email);
+             new Exception("Could not find any user with the email " + email);
         }
     }
      

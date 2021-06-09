@@ -14,4 +14,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	@Modifying
 	public void updateFailedAttempts(int failAttempts, String email);
 
+	public User findByResetPasswordToken(String token);
+
 }
