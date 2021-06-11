@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
+import com.babaonline.springboot.model.User;
 import com.babaonline.springboot.model.Utility;
 import com.babaonline.springboot.service.UserService;
 
@@ -62,6 +64,19 @@ public class ForgotPasswordController1 {
              
         return "forgot";
     }
+    
+    @GetMapping("/reset_password")
+    public String showResetPasswordForm(@Param(value = "token") String token, Model model) {
+        User customer = userService.getByResetPasswordToken(token);
+        model.addAttribute("token", token);
+         
+        if (customer == null) {
+            model.addAttribute("message", "Invalid Token");
+            return "message";
+        }
+         
+        return "forgot_password_form";
+    }
      
     public void sendEmail(String recipientEmail, String link)
             throws MessagingException, UnsupportedEncodingException {
@@ -91,11 +106,28 @@ public class ForgotPasswordController1 {
     
     @GetMapping("/forgot_password")
     public String showForgotPasswordForm() {
-        return "forgot_password_form";
+        return "login";
     }
      
     @PostMapping("/reset_password")
-    public String processResetPassword() {
-    	 return "forgot";
+    public String processResetPassword(HttpServletRequest request, Model model) {
+        String token = request.getParameter("token");
+        String password = request.getParameter("password");
+         
+        User customer = userService.getByResetPasswordToken(token);
+        model.addAttribute("title", "Reset your password");
+         
+        if (customer == null) {
+            model.addAttribute("message", "Invalid Token");
+            return "message";
+        } else {           
+        	userService.updatePassword(customer, password);
+             
+            model.addAttribute("message", "You have successfully changed your password.");
+        }
+         
+        return "password_msg";
     }
+    
+    
 }
