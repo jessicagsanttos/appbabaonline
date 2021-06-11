@@ -14,7 +14,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
@@ -26,9 +25,9 @@ import net.bytebuddy.utility.RandomString;
 
 
 @Controller
-public class ForgotPasswordController1 {
+public class ForgotPasswordController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordController1.class);
+	private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordController.class);
 
 	@Autowired
     private JavaMailSender mailSender;
@@ -36,7 +35,7 @@ public class ForgotPasswordController1 {
     @Autowired
     private UserService userService;
      
-    @GetMapping("/forgotPass")
+    @GetMapping("/forgotPasswordForm")
     public String forgot() {
     	logger.info("showForgotPasswordForm");
         return "forgot";
