@@ -36,9 +36,9 @@ public class ForgotPasswordController {
     private UserService userService;
      
     @GetMapping("/forgotPasswordForm")
-    public String forgot() {
+    public String forgotPasswordForm() {
     	logger.info("showForgotPasswordForm");
-        return "forgot";
+        return "password_update";
     }
  
     @PostMapping("/forgot_password")
@@ -61,7 +61,7 @@ public class ForgotPasswordController {
             model.addAttribute("error", ex.getMessage());
         } 
              
-        return "forgot";
+        return "password_update";
     }
     
     @GetMapping("/reset_password")
@@ -71,7 +71,7 @@ public class ForgotPasswordController {
          
         if (customer == null) {
             model.addAttribute("message", "Invalid Token");
-            return "message";
+            return "password_msg";
         }
          
         return "forgot_password_form";
@@ -118,7 +118,7 @@ public class ForgotPasswordController {
          
         if (customer == null) {
             model.addAttribute("message", "Invalid Token");
-            return "message";
+            return "password_msg";
         } else {           
         	userService.updatePassword(customer, password);
              

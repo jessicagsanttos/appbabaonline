@@ -1,4 +1,4 @@
-package com.babaonline.springboot.web;
+package com.babaonline.springboot.model;
 
 import javax.servlet.http.HttpServletRequest;
 
