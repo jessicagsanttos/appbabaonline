@@ -22,5 +22,7 @@ public interface UserService extends UserDetailsService{
 	void resetFailedAttempts(String email);
 
 	void updateResetPasswordToken(String token, String email);
+	
+	User getByResetPasswordToken(String token);
 
 }

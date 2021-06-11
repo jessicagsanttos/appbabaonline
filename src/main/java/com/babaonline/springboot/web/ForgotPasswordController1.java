@@ -6,33 +6,45 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 
+import com.babaonline.springboot.model.Utility;
 import com.babaonline.springboot.service.UserService;
 
 import net.bytebuddy.utility.RandomString;
 
 
 @Controller
-public class ForgotPasswordController {
-    @Autowired
+public class ForgotPasswordController1 {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordController1.class);
+
+	@Autowired
     private JavaMailSender mailSender;
      
     @Autowired
     private UserService userService;
      
-    @GetMapping("/forgot_password")
-    public String showForgotPasswordForm() {
-        return "forgot_password_form";
+    @GetMapping("/forgotPass")
+    public String forgot() {
+    	logger.info("showForgotPasswordForm");
+        return "forgot";
     }
  
     @PostMapping("/forgot_password")
     public String processForgotPassword(HttpServletRequest request, Model model) {
         String email = request.getParameter("email");
+        logger.info("processForgotPassword " + email );
+        
         String token = RandomString.make(30);
          
         try {
@@ -48,15 +60,16 @@ public class ForgotPasswordController {
             model.addAttribute("error", ex.getMessage());
         } 
              
-        return "forgot_password_form";
+        return "forgot";
     }
      
     public void sendEmail(String recipientEmail, String link)
             throws MessagingException, UnsupportedEncodingException {
-        MimeMessage message = mailSender.createMimeMessage();              
+    	logger.info("sendEmail");
+    	MimeMessage message = mailSender.createMimeMessage();              
         MimeMessageHelper helper = new MimeMessageHelper(message);
          
-        helper.setFrom("contact@shopme.com", "Shopme Support");
+        helper.setFrom("naoresponda@babaonline.com", "Baba Online");
         helper.setTo(recipientEmail);
          
         String subject = "Here's the link to reset your password";
@@ -73,17 +86,16 @@ public class ForgotPasswordController {
          
         helper.setText(content, true);
          
-        mailSender.send(message);
-    }
-     
-     
-    @GetMapping("/reset_password")
-    public String showResetPasswordForm() {
-    	return "forgot_password_form";
+        mailSender.send(message); 
+    } 
+    
+    @GetMapping("/forgot_password")
+    public String showForgotPasswordForm() {
+        return "forgot_password_form";
     }
      
     @PostMapping("/reset_password")
     public String processResetPassword() {
-    	return "forgot_password_form";
+    	 return "forgot";
     }
 }
