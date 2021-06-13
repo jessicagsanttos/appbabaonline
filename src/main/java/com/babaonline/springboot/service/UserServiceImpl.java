@@ -122,10 +122,9 @@ public class UserServiceImpl implements UserService {
             user.setResetPasswordToken(token);
             userRepository.save(user);
         } else {
-             new Exception("Could not find any user with the email " + email);
+             new Exception("Desculpe! Não encontramos usuários cadastrados com o e-mail " + email);
         }
     }
-     
 
 	@Transactional
     public User getByResetPasswordToken(String token) {
@@ -138,6 +137,7 @@ public class UserServiceImpl implements UserService {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(newPassword);
         user.setPassword(encodedPassword);
+        user.setAccountNonLocked(0);
          
         user.setResetPasswordToken(null);
         userRepository.save(user);

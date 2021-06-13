@@ -38,13 +38,13 @@ public class ForgotPasswordController {
     @GetMapping("/forgotPasswordForm")
     public String forgotPasswordForm() {
     	logger.info("showForgotPasswordForm");
-        return "password_update";
+        return "informe_email_form";
     }
  
     @PostMapping("/forgot_password")
     public String processForgotPassword(HttpServletRequest request, Model model) {
         String email = request.getParameter("email");
-        logger.info("processForgotPassword " + email );
+        logger.info("esqueceu a senha " + email );
         
         String token = RandomString.make(30);
          
@@ -52,16 +52,16 @@ public class ForgotPasswordController {
         	userService.updateResetPasswordToken(token, email);
             String resetPasswordLink = Utility.getSiteURL(request) + "/reset_password?token=" + token;
             sendEmail(email, resetPasswordLink);
-            model.addAttribute("message", "We have sent a reset password link to your email. Please check.");
+            model.addAttribute("message", " Um link para trocar a senha foi enviado para o seu e-mail.");
              
         }catch (UnsupportedEncodingException | MessagingException e) {
-            model.addAttribute("error", "Error while sending email");
+            model.addAttribute("error", "Ocorreu um erro enquanto enviamos o seu e-mail.");
         }
         catch (Exception ex) {
             model.addAttribute("error", ex.getMessage());
         } 
              
-        return "password_update";
+        return "informe_email_form";
     }
     
     @GetMapping("/reset_password")
@@ -70,11 +70,11 @@ public class ForgotPasswordController {
         model.addAttribute("token", token);
          
         if (customer == null) {
-            model.addAttribute("message", "Invalid Token");
+            model.addAttribute("message", "Token Inválido");
             return "password_msg";
         }
          
-        return "forgot_password_form";
+        return "atualizar_senha_form";
     }
      
     public void sendEmail(String recipientEmail, String link)
@@ -86,15 +86,15 @@ public class ForgotPasswordController {
         helper.setFrom("naoresponda@babaonline.com", "Baba Online");
         helper.setTo(recipientEmail);
          
-        String subject = "Here's the link to reset your password";
+        String subject = "Aqui está o link para alterar a sua senha.";
          
-        String content = "<p>Hello,</p>"
-                + "<p>You have requested to reset your password.</p>"
-                + "<p>Click the link below to change your password:</p>"
-                + "<p><a href=\"" + link + "\">Change my password</a></p>"
+        String content = "<p>Olá! :) ,</p>"
+                + "<p>Você solicitou alteração de senha.</p>"
+                + "<p>Clique no link abaixo para fazer a alteração:</p>"
+                + "<p><a href=\"" + link + "\">Alterar a senha</a></p>"
                 + "<br>"
-                + "<p>Ignore this email if you do remember your password, "
-                + "or you have not made the request.</p>";
+                + "<p> Ignore esse e-mail se você lembrou a sua senha, "
+                + "ou você não fez a sua solicitação.</p>";
          
         helper.setSubject(subject);
          
@@ -105,7 +105,7 @@ public class ForgotPasswordController {
     
     @GetMapping("/forgot_password")
     public String showForgotPasswordForm() {
-        return "login";
+        return "login_form";
     }
      
     @PostMapping("/reset_password")
@@ -113,16 +113,15 @@ public class ForgotPasswordController {
         String token = request.getParameter("token");
         String password = request.getParameter("password");
          
-        User customer = userService.getByResetPasswordToken(token);
-        model.addAttribute("title", "Reset your password");
+        User user = userService.getByResetPasswordToken(token);
+        model.addAttribute("title", "Crie sua nova senha");
          
-        if (customer == null) {
-            model.addAttribute("message", "Invalid Token");
+        if (user == null) {
+            model.addAttribute("message", "Token Inválido");
             return "password_msg";
-        } else {           
-        	userService.updatePassword(customer, password);
-             
-            model.addAttribute("message", "You have successfully changed your password.");
+        } else {  
+        	userService.updatePassword(user, password);
+            model.addAttribute("message", "Você alterou a sua senha com sucesso. :)");
         }
          
         return "password_msg";

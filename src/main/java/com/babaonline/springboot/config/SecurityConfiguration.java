@@ -48,7 +48,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers( "/reset_password**","/forgot_password" ,"/forgotPasswordForm**", "/registration**", "/js/**", "/css/**", "/img/**","/login**").permitAll().anyRequest()
+		http.authorizeRequests().antMatchers( "/reset_password**","/forgot_password" ,"/forgotPasswordForm**", "/registration**", "/js/**", "/css/**", "/images/**",  "/fonts/**", "/vendor/**", "/img/**","/login**").permitAll().anyRequest()
 				.authenticated().and().formLogin().loginPage("/login").failureHandler(loginFailureHandler)
 				.successHandler(loginSuccessHandler).permitAll().and().logout().invalidateHttpSession(true)
 				.clearAuthentication(true).logoutRequestMatcher(new AntPathRequestMatcher("/logout"))

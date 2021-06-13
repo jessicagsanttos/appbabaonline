@@ -34,13 +34,15 @@
 		<div class = "row">
 			<div class = "col-md-6 col-md-offset-3">
 				
-				<h1> Login </p> </h1>
+				<h1> Login</h1>
 				<form th:action="@{/login}" method="post">
 					
 					<!-- error message -->
 					<div th:if="${param.error}">
 						<div class="alert alert-danger">Usuario ou senha invalido</div>
 					</div>
+					
+					
 					
 					<div th:if="${param.error2}">
 						<div class="alert alert-danger">Usuario ou senha invalido - Conta bloqueada por excesso de tentativas falhas</div>
@@ -67,14 +69,18 @@
 						<div class="row">
 							<div class="col-sm-6 col-sm-offset-3">
 								<input type="submit" name="login-submit" id="login-submit"
-									class="form-control btn btn-primary" value="Log In" />
+									class="form-control btn btn-primary" value="Entrar" />
 							</div>
 						</div>
 					</div>
 				</form>
 				<div class="form-group">
-						<span>Novo usuario? <a href="/" th:href="@{/registration}">Inscreva-se aqui!</a></span>
+						<span>Novo usuario? <a href="/" th:href="@{/registration}">Inscreva-se gratuitamente!</a></span>
 				</div>
+				
+				<div class="form-group">
+						<span>Esqueceu sua senha? <a th:href="@{/forgotPasswordForm}">Clique aqui</a></span>
+				</div>				
 			</div>
 		</div>
 	</div>

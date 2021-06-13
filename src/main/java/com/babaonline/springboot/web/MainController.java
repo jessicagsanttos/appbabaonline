@@ -14,13 +14,13 @@ public class MainController {
 	@GetMapping("/login")
 	public String login() {
 		logger.info("Controller, metodo login");
-		return "login";
+		return "login_form";
 	}
 	
 	@GetMapping("/loginInvalido")
 	public String loginInvalido() {
 		logger.info("Controller, metodo login invalido");
-		return "login";
+		return "login_form";
 	}
 	
 	@GetMapping("/")
